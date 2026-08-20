@@ -1,3 +1,5 @@
+import heroImage from '../assets/hero-simulation.jpg'
+
 export default function Hero() {
   return (
     <section className="bg-slate-950 text-slate-100 px-6 py-20 md:py-28">
@@ -13,9 +15,9 @@ export default function Hero() {
             Acesse a simulação
           </a>
         </div>
-        <div className="aspect-video bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center overflow-hidden">
-          <span className="text-slate-600 text-sm">Imagem da simulação em breve</span>
-        </div>
+        <div className="aspect-square bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center">
+  <img src={heroImage} alt="Simulação de física de partículas" className="w-full h-full object-contain" />
+</div>
       </div>
     </section>
   )
