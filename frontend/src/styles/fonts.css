@@ -1,0 +1,39 @@
+/*
+  Self-hosted @font-face declarations.
+
+  Ykar and Basteleur are not on Google Fonts, so both need their own
+  licensed font files dropped into public/fonts/<name>/ — see the
+  LEIA-ME.txt placeholder in each folder and the setup instructions
+  in INSTRUCOES.md for exactly which filenames to use (or how to
+  change the paths below to match the files you already have).
+*/
+
+@font-face {
+  font-family: 'Ykar';
+  src:
+    url('/fonts/Ykar/Ykar-Regular.woff2') format('woff2'),
+    url('/fonts/Ykar/Ykar-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Basteleur';
+  src:
+    url('/fonts/Basteleur/Basteleur-Bold.woff2') format('woff2'),
+    url('/fonts/Basteleur/Basteleur-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  src:
+    url('/fonts/Fraunces/Fraunces-Variable.woff2') format('woff2-variations'),
+    url('/fonts/Fraunces/Fraunces-Regular.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}

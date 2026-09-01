@@ -1,0 +1,55 @@
+/*
+  Design tokens for Geantino Labs.
+
+  Colors are sampled from the Rutherford scattering render used in the
+  hero video (pure black background, blue beam trajectory), so the UI
+  reads as an extension of the simulation itself rather than a generic
+  theme layered on top of it.
+*/
+
+:root {
+  /* Color */
+  --color-void: #000000;
+  --color-void-soft: #0a0a0d;
+  --color-paper: #f3f1ec;
+  --color-ink: #101014;
+
+  --color-beam: #2f5dff;
+  --color-beam-hover: #4a72ff;
+  --color-trace: #e3b23c;
+
+  --color-line: rgba(255, 255, 255, 0.14);
+  --color-line-soft: rgba(255, 255, 255, 0.08);
+
+  --color-on-void: rgba(255, 255, 255, 0.92);
+  --color-on-void-soft: rgba(255, 255, 255, 0.62);
+
+  /* Type families — see fonts.css for @font-face declarations */
+  --font-display: 'Ykar', 'Helvetica Neue', Arial, sans-serif;
+  --font-subtitle: 'Basteleur', Georgia, serif;
+  --font-body: 'Fraunces', Georgia, serif;
+
+  /* Fluid type scale */
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.75rem, 1.5rem + 1.2vw, 2.5rem);
+  --step-3: clamp(2.5rem, 2rem + 2.5vw, 4rem);
+  --step-4: clamp(3.25rem, 2.4rem + 4.2vw, 6rem);
+
+  /* Space */
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 1.25rem;
+  --space-4: 2rem;
+  --space-5: 3.5rem;
+  --space-6: 5.5rem;
+
+  /* Layout */
+  --content-max: 76rem;
+  --nav-height: 4.5rem;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+}
