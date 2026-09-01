@@ -2,7 +2,6 @@
 // import reactLogo from './assets/react.svg'
 // import viteLogo from './assets/vite.svg'
 // import heroImg from './assets/hero.png'
-import Hero from '../components/home/Hero'
 // import './App.css'
 
 // function App() {
@@ -122,6 +121,10 @@ import Hero from '../components/home/Hero'
 
 // export default App
 
+import Hero from '../components/home/Hero'
+import SimulationExample from './pages/SimulationExample'
+// ...
+<Route path="/simulacoes/rutherford" element={<SimulationExample />} />
 import Header from './components/Header'
 import Hero from './components/Hero'
 import About from './components/About'
