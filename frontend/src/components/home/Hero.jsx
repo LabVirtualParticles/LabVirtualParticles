@@ -18,6 +18,9 @@ export default function Hero() {
     <section className="hero">
       <div className="hero__content">
         <h1 className="hero__title">Geantino Labs</h1>
+        <p className="hero__subtitle">
+          Simule experimentos de física de partículas de forma simples e rápida.
+        </p>
         <p className="hero__lede">
           Uma plataforma web que roda simulações reais no Geant4 — o mesmo motor
           científico usado no CERN — direto do navegador, sem instalação.

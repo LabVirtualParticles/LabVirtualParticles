@@ -77,7 +77,8 @@
 .navbar__dropdown {
   position: absolute;
   top: calc(100% + 0.75rem);
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: var(--space-4);
   padding: var(--space-3);

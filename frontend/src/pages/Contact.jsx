@@ -1,0 +1,55 @@
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/Footer';
+import './Contact.css';
+
+// Edit this list to match the real team — the grid below is generated
+// entirely from this array, so adding, renaming or removing a member
+// never requires touching the markup. `photo` is optional; while it's
+// empty the card falls back to the placeholder block shown in the mock.
+const TEAM = [
+  { id: 1, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
+  { id: 2, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
+  { id: 3, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
+  { id: 4, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
+  { id: 5, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
+  { id: 6, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
+];
+
+function ContactCard({ member }) {
+  return (
+    <li className="contact-card">
+      <div className="contact-card__photo">
+        {member.photo && <img src={member.photo} alt={member.name} />}
+      </div>
+      <div className="contact-card__info">
+        <span className="contact-card__name">{member.name}</span>
+        <a className="contact-card__email" href={`mailto:${member.email}`}>
+          {member.email}
+        </a>
+      </div>
+    </li>
+  );
+}
+
+export default function Contact() {
+  return (
+    <div className="contact-page">
+      <Navbar />
+
+      <main className="contact-page__main">
+        <header className="contact-page__header">
+          <h1>Contato</h1>
+          <p>Conheça a equipe por trás do LabVirtualParticles.</p>
+        </header>
+
+        <ul className="contact-page__grid">
+          {TEAM.map((member) => (
+            <ContactCard key={member.id} member={member} />
+          ))}
+        </ul>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
