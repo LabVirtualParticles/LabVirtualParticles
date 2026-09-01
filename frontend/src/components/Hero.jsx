@@ -1,9 +1,9 @@
-import Hero from '../components/home/Hero'
+
 import heroImage from '../assets/hero-simulation.jpg'
 
 export default function Hero() {
   return (
-    <Hero />
+  
     <section className="bg-slate-950 text-slate-100 px-6 py-20 md:py-28">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
         <div>
