@@ -1,4 +1,4 @@
-import Hero from '../components/home/Hero'
+import Hero from './components/home/Hero'
 import './styles/fonts.css'
 import './styles/tokens.css'
 import './styles/global.css'
