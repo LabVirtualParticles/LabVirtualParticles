@@ -4,12 +4,12 @@ export default function Header() {
       <div className="font-bold text-lg tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>
         LabVirtualParticles
       </div>
-      <nav className="hidden md:flex gap-6 text-sm text-slate-300">
+      {/* <nav className="hidden md:flex gap-6 text-sm text-slate-300">
         <a href="#" className="hover:text-cyan-400 transition">Física Médica</a>
         <a href="#" className="hover:text-cyan-400 transition">Astrofísica</a>
         <a href="#" className="hover:text-cyan-400 transition">Nuclear</a>
         <a href="https://github.com/helen1789/LabVirtualParticles" className="hover:text-cyan-400 transition">GitHub</a>
-      </nav>
+      </nav> */}
     </header>
   )
 }
