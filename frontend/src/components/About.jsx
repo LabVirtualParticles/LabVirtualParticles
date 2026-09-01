@@ -1,7 +1,6 @@
-import Hero from '../components/home/Hero'
+
 export default function About() {
   return (
-    <Hero />
     <section className="bg-slate-900 text-slate-100 px-6 py-20">
       <div className="max-w-4xl mx-auto text-center">
         <h2
