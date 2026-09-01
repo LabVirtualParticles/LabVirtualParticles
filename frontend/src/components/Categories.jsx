@@ -1,3 +1,4 @@
+import Hero from '../components/home/Hero'
 const categories = [
   { name: 'Física Médica', desc: 'Simulações de radioterapia e imagem médica' },
   { name: 'Astrofísica', desc: 'Interações de partículas em ambientes cósmicos' },
@@ -6,6 +7,7 @@ const categories = [
 
 export default function Categories() {
   return (
+    <Hero />
     <section className="bg-slate-950 text-slate-100 px-6 py-20">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold mb-10 text-center" style={{ fontFamily: 'Space Grotesk' }}>
