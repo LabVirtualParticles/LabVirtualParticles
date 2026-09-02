@@ -10,6 +10,12 @@
   aspect-ratio: 16 / 9;
 }
 
+/* Coordinates for these paths are computed in JS (see SimulationsMap.jsx)
+   from the actual on-screen position of each card and the center label,
+   so the lines always touch the cards exactly instead of floating near
+   an approximate spot. No viewBox here on purpose — the SVG's own pixel
+   box is the coordinate space, matching the getBoundingClientRect() math
+   in the component. */
 .sim-map__lines {
   position: absolute;
   inset: 0;
@@ -20,7 +26,15 @@
 .sim-map__lines path {
   fill: none;
   stroke: var(--color-line);
-  stroke-width: 0.4;
+  stroke-width: 1.5;
+  stroke-dasharray: 7 6;
+  animation: sim-map-line-flow 7s linear infinite;
+}
+
+@keyframes sim-map-line-flow {
+  to {
+    stroke-dashoffset: -26;
+  }
 }
 
 .sim-map__center {
@@ -128,6 +142,17 @@
     box-shadow 0.25s var(--ease-standard);
   -webkit-animation: vibrate-1 3000ms ease-in infinite both;
           animation: vibrate-1 3000ms ease-in infinite both;
+}
+
+/* Hovering ANY card freezes the vibration on every card, not just the
+   one under the pointer — the whole group settles at once. The
+   `:not(:hover)` keeps this from fighting the hovered card's own lift
+   below (higher-specificity rule would otherwise win on all of them). */
+.sim-map__diagram:has(.sim-map__card:hover) .sim-map__card:not(:hover) {
+  -webkit-animation: none;
+          animation: none;
+  -webkit-transform: translate(0);
+          transform: translate(0);
 }
 
 .sim-map__card:hover {
