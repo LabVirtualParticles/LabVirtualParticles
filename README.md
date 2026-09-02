@@ -1,4 +1,4 @@
-# LabVirtualParticles
+# Geantino Labs
 
 Plataforma web para simulação e visualização de experimentos de física de
 partículas direto no navegador, sem precisar instalar nada localmente. O

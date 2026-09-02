@@ -7,12 +7,12 @@ import './Contact.css';
 // never requires touching the markup. `photo` is optional; while it's
 // empty the card falls back to the placeholder block shown in the mock.
 const TEAM = [
-  { id: 1, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
-  { id: 2, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
-  { id: 3, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
-  { id: 4, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
-  { id: 5, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
-  { id: 6, name: 'Nome do integrante', email: 'email@labvirtualparticles.org', photo: '' },
+  { id: 1, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '' },
+  { id: 2, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '' },
+  { id: 3, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '' },
+  { id: 4, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '' },
+  { id: 5, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '' },
+  { id: 6, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '' },
 ];
 
 function ContactCard({ member }) {
@@ -39,7 +39,7 @@ export default function Contact() {
       <main className="contact-page__main">
         <header className="contact-page__header">
           <h1>Contato</h1>
-          <p>Conheça a equipe por trás do LabVirtualParticles.</p>
+          <p>Conheça a equipe por trás do Geantino Labs.</p>
         </header>
 
         <ul className="contact-page__grid">
