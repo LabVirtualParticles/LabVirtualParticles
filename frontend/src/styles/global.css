@@ -31,6 +31,10 @@ button {
   font: inherit;
 }
 
+code {
+  color: var(--color-trace);
+}
+
 :focus-visible {
   outline: 2px solid var(--color-trace);
   outline-offset: 3px;

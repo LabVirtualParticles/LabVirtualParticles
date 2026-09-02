@@ -1,10 +1,12 @@
+import './Footer.css';
+
 export default function Footer() {
   return (
-    <footer className="bg-slate-950 border-t border-slate-800 text-slate-500 text-sm px-6 py-8 text-center">
+    <footer className="footer">
       <p>LabVirtualParticles — projeto acadêmico do IFPR</p>
-      <a href="https://github.com/helen1789/LabVirtualParticles" className="hover:text-cyan-400 transition">
+      <a href="https://github.com/helen1789/LabVirtualParticles" className="footer__link">
         GitHub
       </a>
     </footer>
-  )
+  );
 }
