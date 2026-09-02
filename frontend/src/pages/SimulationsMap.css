@@ -55,6 +55,60 @@
   max-width: 28ch;
 }
 
+@-webkit-keyframes vibrate-1 {
+  0% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+  20% {
+    -webkit-transform: translate(-6px, 6px);
+            transform: translate(-6px, 6px);
+  }
+  40% {
+    -webkit-transform: translate(-6px, -6px);
+            transform: translate(-6px, -6px);
+  }
+  60% {
+    -webkit-transform: translate(6px, 6px);
+            transform: translate(6px, 6px);
+  }
+  80% {
+    -webkit-transform: translate(6px, -6px);
+            transform: translate(6px, -6px);
+  }
+  100% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+}
+
+@keyframes vibrate-1 {
+  0% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+  20% {
+    -webkit-transform: translate(-6px, 6px);
+            transform: translate(-6px, 6px);
+  }
+  40% {
+    -webkit-transform: translate(-6px, -6px);
+            transform: translate(-6px, -6px);
+  }
+  60% {
+    -webkit-transform: translate(6px, 6px);
+            transform: translate(6px, 6px);
+  }
+  80% {
+    -webkit-transform: translate(6px, -6px);
+            transform: translate(6px, -6px);
+  }
+  100% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+}
+
 .sim-map__card {
   position: absolute;
   width: 32%;
@@ -72,12 +126,16 @@
     border-color 0.2s var(--ease-standard),
     transform 0.25s var(--ease-standard),
     box-shadow 0.25s var(--ease-standard);
+  -webkit-animation: vibrate-1 3000ms ease-in infinite both;
+          animation: vibrate-1 3000ms ease-in infinite both;
 }
 
 .sim-map__card:hover {
   border-color: var(--color-beam);
   transform: translateY(-6px);
   box-shadow: 0 16px 30px rgba(0, 0, 0, 0.45);
+  -webkit-animation: none;
+          animation: none;
 }
 
 .sim-map__card-rule {
