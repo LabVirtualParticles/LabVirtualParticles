@@ -1,0 +1,130 @@
+.sim-map {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-3) var(--space-6);
+}
+
+.sim-map__hint {
+  font-family: var(--font-body);
+  color: var(--color-on-void-soft);
+  text-align: center;
+  max-width: 40ch;
+  margin: 0 auto var(--space-5);
+}
+
+.sim-map__diagram {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.sim-map__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.sim-map__lines path {
+  fill: none;
+  stroke: var(--color-line);
+  stroke-width: 0.4;
+}
+
+.sim-map__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0 0.6rem;
+  background: var(--color-void);
+  font-family: var(--font-subtitle);
+  font-weight: 700;
+  font-size: var(--step-1);
+  color: var(--color-on-void);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.sim-map__card {
+  position: absolute;
+  width: 32%;
+  min-width: 11rem;
+  max-width: 16rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-void-soft);
+  text-decoration: none;
+  transition: border-color 0.2s var(--ease-standard);
+}
+
+.sim-map__card:hover {
+  border-color: var(--color-beam);
+}
+
+.sim-map__card--0 {
+  top: 8%;
+  left: 5%;
+}
+
+.sim-map__card--1 {
+  top: 8%;
+  right: 5%;
+}
+
+.sim-map__card--2 {
+  bottom: 8%;
+  left: 5%;
+}
+
+.sim-map__card--3 {
+  bottom: 8%;
+  right: 5%;
+}
+
+.sim-map__card-title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--step-0);
+  color: var(--color-beam);
+}
+
+.sim-map__card-soon {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  color: var(--color-on-void-soft);
+  opacity: 0.6;
+}
+
+@media (max-width: 720px) {
+  .sim-map__diagram {
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .sim-map__lines {
+    display: none;
+  }
+
+  .sim-map__center {
+    position: static;
+    transform: none;
+    background: none;
+    padding: 0;
+    text-align: center;
+    margin-bottom: var(--space-2);
+  }
+
+  .sim-map__card {
+    position: static;
+    width: 100%;
+    max-width: none;
+  }
+}
