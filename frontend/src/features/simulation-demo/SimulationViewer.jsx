@@ -28,6 +28,26 @@ function TargetVolume({ size, position = [0, 0, 0] }) {
   );
 }
 
+// Malha genérica vinda do backend real (geometry_converter.py): vértices
+// planos [x0,y0,z0, x1,y1,z1, ...] + índices de triângulo. Usado para
+// qualquer sólido que não seja uma caixa simples (ex.: o detector, um
+// G4Tubs tesselado em arco).
+function MeshVolume({ vertices, indices, position = [0, 0, 0], color = '#e3b23c' }) {
+  const geometry = useMemo(() => {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    if (indices && indices.length > 0) geo.setIndex(indices);
+    geo.computeVertexNormals();
+    return geo;
+  }, [vertices, indices]);
+
+  return (
+    <mesh geometry={geometry} position={position}>
+      <meshBasicMaterial color={color} wireframe />
+    </mesh>
+  );
+}
+
 function Trajectories({ trajectories }) {
   return trajectories.map((trajectory) => (
     <Line key={trajectory.id} points={trajectory.points} color={trajectory.color} lineWidth={1.4} />
@@ -35,14 +55,11 @@ function Trajectories({ trajectories }) {
 }
 
 /**
- * Placeholder 3D view. `data` is expected to follow the shape of
- * data/result.example.json:
- *   { world: { size }, volumes: [{ id, shape, size, position, wireframeOnly? }], trajectories: [{ id, color, points }] }
- *
- * Once the Geant4 pipeline is wired up, feed the converted
- * geometry/trajectory JSON from your backend into this same `data`
- * prop — nothing in this file needs to change as long as the shape
- * matches.
+ * `data` aceita dois formatos de volume, para funcionar tanto com o mock
+ * quanto com a resposta real do backend (já convertida por adapter.js):
+ *   - caixa simples: { id, shape: 'box' (ou omitido), size, position, wireframeOnly? }
+ *   - malha genérica: { id, shape: 'mesh', vertices, indices, position }
+ * Formato geral: { world: { size }, volumes: [...], trajectories: [{ id, color, points }] }
  */
 export default function SimulationViewer({ data, status }) {
   return (
@@ -54,9 +71,18 @@ export default function SimulationViewer({ data, status }) {
           <WireframeBox size={data.world.size} />
           {data.volumes
             .filter((volume) => !volume.wireframeOnly)
-            .map((volume) => (
-              <TargetVolume key={volume.id} size={volume.size} position={volume.position} />
-            ))}
+            .map((volume) =>
+              volume.shape === 'mesh' ? (
+                <MeshVolume
+                  key={volume.id}
+                  vertices={volume.vertices}
+                  indices={volume.indices}
+                  position={volume.position}
+                />
+              ) : (
+                <TargetVolume key={volume.id} size={volume.size} position={volume.position} />
+              )
+            )}
           <Trajectories trajectories={data.trajectories} />
         </Suspense>
         <OrbitControls enablePan={false} minDistance={120} maxDistance={600} />
@@ -65,6 +91,11 @@ export default function SimulationViewer({ data, status }) {
       {status === 'running' && (
         <div className="simulation-viewer__overlay" role="status">
           Processando simulação…
+        </div>
+      )}
+      {status === 'error' && (
+        <div className="simulation-viewer__overlay" role="alert">
+          Falha ao rodar a simulação. Veja o console para detalhes.
         </div>
       )}
     </div>

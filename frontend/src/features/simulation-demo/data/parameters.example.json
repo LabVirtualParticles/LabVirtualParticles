@@ -7,9 +7,18 @@
       "label": "Partícula incidente",
       "type": "select",
       "options": [
-        { "value": "alpha", "label": "Partícula alfa (G4Alpha)" },
-        { "value": "proton", "label": "Próton (G4Proton)" },
-        { "value": "electron", "label": "Elétron (G4Electron)" }
+        {
+          "value": "alpha",
+          "label": "Partícula alfa (G4Alpha)"
+        },
+        {
+          "value": "proton",
+          "label": "Próton (G4Proton)"
+        },
+        {
+          "value": "electron",
+          "label": "Elétron (G4Electron)"
+        }
       ],
       "default": "alpha"
     },
@@ -34,24 +43,35 @@
     },
     {
       "id": "targetMaterial",
-      "label": "Material do alvo",
+      "label": "Material do alvo (em breve)",
       "type": "select",
       "options": [
-        { "value": "G4_Au", "label": "Ouro (G4_Au)" },
-        { "value": "G4_Al", "label": "Alumínio (G4_Al)" },
-        { "value": "G4_Cu", "label": "Cobre (G4_Cu)" }
+        {
+          "value": "G4_Au",
+          "label": "Ouro (G4_Au)"
+        },
+        {
+          "value": "G4_Al",
+          "label": "Alumínio (G4_Al)"
+        },
+        {
+          "value": "G4_Cu",
+          "label": "Cobre (G4_Cu)"
+        }
       ],
-      "default": "G4_Au"
+      "default": "G4_Au",
+      "disabled": true
     },
     {
       "id": "targetThickness",
-      "label": "Espessura da folha do alvo",
+      "label": "Espessura da folha do alvo (em breve)",
       "type": "number",
       "unit": "µm",
       "min": 0.1,
       "max": 10,
       "step": 0.1,
-      "default": 1
+      "default": 1,
+      "disabled": true
     }
   ]
 }

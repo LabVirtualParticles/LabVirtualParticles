@@ -154,3 +154,9 @@
   font-size: var(--step-0);
   backdrop-filter: blur(2px);
 }
+
+.sim-page__error {
+  margin-top: 0.75rem;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+}
