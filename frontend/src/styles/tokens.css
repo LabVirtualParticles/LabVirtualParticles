@@ -38,12 +38,12 @@
   --step-4: clamp(3.25rem, 2.4rem + 4.2vw, 6rem);
 
   /* Space */
-  --space-1: 0.5rem;
-  --space-2: 0.75rem;
-  --space-3: 1.25rem;
-  --space-4: 2rem;
-  --space-5: 3.5rem;
-  --space-6: 5.5rem;
+  --space-1: 10px;
+  --space-2: 10px;
+  --space-3: 10px;
+  --space-4: 10px;
+  --space-5: 10px;
+  --space-6: 10px;
 
   /* Layout */
   --content-max: 76rem;
