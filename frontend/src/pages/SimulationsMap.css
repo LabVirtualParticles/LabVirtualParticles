@@ -4,14 +4,6 @@
   padding: var(--space-5) var(--space-3) var(--space-6);
 }
 
-.sim-map__hint {
-  font-family: var(--font-body);
-  color: var(--color-on-void-soft);
-  text-align: center;
-  max-width: 40ch;
-  margin: 0 auto var(--space-5);
-}
-
 .sim-map__diagram {
   position: relative;
   width: 100%;
@@ -36,15 +28,31 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  margin: 0;
-  padding: 0 0.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.8rem;
   background: var(--color-void);
+  text-align: center;
+  pointer-events: none;
+}
+
+.sim-map__center-title {
+  margin: 0;
   font-family: var(--font-subtitle);
   font-weight: 700;
   font-size: var(--step-1);
   color: var(--color-on-void);
   white-space: nowrap;
-  pointer-events: none;
+}
+
+.sim-map__center-hint {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  color: var(--color-on-void-soft);
+  max-width: 28ch;
 }
 
 .sim-map__card {
@@ -60,11 +68,24 @@
   border-radius: var(--radius-md);
   background: var(--color-void-soft);
   text-decoration: none;
-  transition: border-color 0.2s var(--ease-standard);
+  transition:
+    border-color 0.2s var(--ease-standard),
+    transform 0.25s var(--ease-standard),
+    box-shadow 0.25s var(--ease-standard);
 }
 
 .sim-map__card:hover {
   border-color: var(--color-beam);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.45);
+}
+
+.sim-map__card-rule {
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  background: var(--color-on-void);
+  opacity: 0.6;
 }
 
 .sim-map__card--0 {

@@ -16,8 +16,6 @@ export default function SimulationsMap() {
     <>
       <Navbar />
       <main className="sim-map">
-        <p className="sim-map__hint">Escolha uma área para ver as simulações disponíveis.</p>
-
         <div className="sim-map__diagram">
           <svg
             className="sim-map__lines"
@@ -31,7 +29,12 @@ export default function SimulationsMap() {
             <path d="M 70 75 C 62 65, 58 58, 53 53" />
           </svg>
 
-          <h1 className="sim-map__center">Simulações</h1>
+          <div className="sim-map__center">
+            <h1 className="sim-map__center-title">Simulações</h1>
+            <p className="sim-map__center-hint">
+              Escolha uma área para ver as simulações disponíveis.
+            </p>
+          </div>
 
           {SIMULATION_CATEGORIES.map((category, index) => (
             <Link
@@ -40,6 +43,7 @@ export default function SimulationsMap() {
               className={`sim-map__card sim-map__card--${index}`}
             >
               <span className="sim-map__card-title">{category.label}</span>
+              <span className="sim-map__card-rule" aria-hidden="true" />
               {category.items.length === 0 && !category.directPath && (
                 <span className="sim-map__card-soon">Em breve</span>
               )}
