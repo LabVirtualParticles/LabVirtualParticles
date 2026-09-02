@@ -37,13 +37,14 @@
   --step-3: clamp(2.5rem, 2rem + 2.5vw, 4rem);
   --step-4: clamp(3.25rem, 2.4rem + 4.2vw, 6rem);
 
-  /* Space */
-  --space-1: 10px;
-  --space-2: 10px;
-  --space-3: 10px;
-  --space-4: 10px;
-  --space-5: 10px;
-  --space-6: 10px;
+  /* Space — same 6-step shape as before (~1.5x per step), just
+     compressed to run from 8px to 66px instead of 8px to 88px. */
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 18px;
+  --space-4: 28px;
+  --space-5: 44px;
+  --space-6: 66px;
 
   /* Layout */
   --content-max: 76rem;
