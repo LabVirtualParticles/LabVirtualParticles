@@ -9,13 +9,13 @@ import explanationSchema from '../features/simulation-demo/data/explanations.exa
 import '../features/simulation-demo/simulation-demo.css';
 
 // Reference page for running a simulation end to end: parameter fields
-// on the left, 3D viewer + actions on the right. Everything here is
-// wired to placeholder data — the three places to touch when Geant4 is
-// ready are data/parameters.example.json (the form fields),
-// data/explanations.example.json (the historical/physics/results
-// content), and useSimulationRun.js (the runMockSimulation function).
+// on the left, 3D viewer + actions on the right. useSimulationRun já usa
+// o backend real (api.js -> POST /simulations/{id}/run + adapter.js) —
+// configure a URL em frontend/.env (VITE_API_BASE_URL). O botão de
+// "Contexto e fundamentos" abre o ExplanationPanel, com o conteúdo
+// pedagógico definido em data/explanations.example.json.
 export default function SimulationExample() {
-  const { values, setField, status, data, run, exportData } = useSimulationRun(schema);
+  const { values, setField, status, data, error, run, exportData } = useSimulationRun(schema);
   const [isExplanationOpen, setExplanationOpen] = useState(false);
 
   return (
@@ -61,6 +61,11 @@ export default function SimulationExample() {
                 Exportar dados
               </button>
             </div>
+            {status === 'error' && error && (
+              <p className="sim-page__error" role="alert">
+                {error}
+              </p>
+            )}
           </div>
         </div>
 

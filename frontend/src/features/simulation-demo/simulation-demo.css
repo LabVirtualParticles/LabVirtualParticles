@@ -256,3 +256,9 @@
 .explanation-panel__list strong {
   color: var(--color-on-void);
 }
+
+.sim-page__error {
+  margin-top: 0.75rem;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+}
