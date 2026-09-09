@@ -140,8 +140,8 @@
     border-color 0.2s var(--ease-standard),
     transform 0.25s var(--ease-standard),
     box-shadow 0.25s var(--ease-standard);
-  -webkit-animation: vibrate-1 3000ms ease-in infinite both;
-          animation: vibrate-1 3000ms ease-in infinite both;
+  -webkit-animation: vibrate-1 6000ms ease-in infinite both;
+          animation: vibrate-1 6000ms ease-in infinite both;
 }
 
 /* Hovering ANY card freezes the vibration on every card, not just the

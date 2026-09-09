@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import HeroCanvasFX from './HeroCanvasFX';
 import './Hero.css';
 
 export default function Hero() {
@@ -16,6 +17,8 @@ export default function Hero() {
 
   return (
     <section className="hero">
+      <HeroCanvasFX />
+
       <div className="hero__content">
         <h1 className="hero__title">Geantino Labs</h1>
         <p className="hero__lede">

@@ -21,8 +21,12 @@ export default function ThemeToggle() {
       title={isLight ? 'Tema escuro' : 'Tema claro'}
     >
       {isLight ? (
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+        // Lua minguante + "estrelinhas" (mini sparkles em cruz) — no
+        // estilo do ícone "bedtime"/"dark_mode" do Google Material Symbols.
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20.5 14.7A8.5 8.5 0 1 1 10 4.2a6.8 6.8 0 0 0 10.5 10.5Z" />
+          <path d="M18.4 2.6v2.6M17.1 3.9h2.6" />
+          <path d="M21.4 8v1.8M20.5 8.9h1.8" />
         </svg>
       ) : (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

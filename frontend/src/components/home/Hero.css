@@ -8,6 +8,16 @@
   overflow: hidden;
 }
 
+.hero__fx {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
 .hero__content {
   position: relative;
   z-index: 1;
@@ -68,6 +78,7 @@
 
 .hero__stage {
   position: relative;
+  z-index: 1;
   height: 100%;
   min-height: 26rem;
   /* Same exact black as the video's own background, sampled directly
