@@ -1,11 +1,8 @@
-import AboutCanvasFX from './AboutCanvasFX';
 import './About.css';
 
 export default function About() {
   return (
     <section className="about">
-      <AboutCanvasFX />
-
       <div className="about__inner">
         <h2 className="about__title">
           Simulação de física de partículas direto no navegador

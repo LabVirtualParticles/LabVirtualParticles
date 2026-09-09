@@ -1,24 +1,10 @@
 .about {
-  position: relative;
   background: var(--color-void);
   color: var(--color-on-void);
   padding: var(--space-6) var(--space-3);
-  overflow: hidden;
-}
-
-.about__fx {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  pointer-events: none;
 }
 
 .about__inner {
-  position: relative;
-  z-index: 1;
   max-width: 56rem;
   margin: 0 auto;
   text-align: center;
