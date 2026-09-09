@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Geantino Labs — teste brutalista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #000000;
+    --paper: #ffffff;
+    --line: #000000;
+    --soft: #6b6b6b;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  a { color: inherit; }
+
+  .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* NAV bar */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2rem;
+    border-bottom: 2px solid var(--line);
+    background: var(--paper);
+  }
+
+  .nav__brand {
+    font-weight: 900;
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav__brand-mark {
+    width: 10px;
+    height: 10px;
+    background: var(--ink);
+    display: inline-block;
+  }
+
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: 2.2rem;
+  }
+
+  .nav__link {
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nav__cta {
+    text-decoration: none;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.1rem;
+    border: 2px solid var(--ink);
+  }
+
+  .nav__cta:hover { background: var(--paper); color: var(--ink); }
+
+  /* TICKER */
+  .ticker {
+    border-bottom: 2px solid var(--line);
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--ink);
+  }
+
+  .ticker__track {
+    display: inline-block;
+    padding: 0.55rem 0;
+    animation: scroll 28s linear infinite;
+  }
+
+  .ticker__track span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--paper);
+    margin-right: 2.5rem;
+  }
+
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* HERO */
+  .hero {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 4.5rem 2rem 5rem;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .hero__eyebrow {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.7rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .hero__title {
+    font-weight: 900;
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem;
+    text-transform: uppercase;
+  }
+
+  .hero__lede {
+    font-size: 1.05rem;
+    line-height: 1.55;
+    max-width: 38ch;
+    color: var(--soft);
+    margin: 0 0 2.2rem;
+  }
+
+  .hero__cta-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.9rem 1.4rem;
+    border: 2px solid var(--ink);
+  }
+
+  .btn--solid { background: var(--ink); color: var(--paper); }
+  .btn--solid:hover { background: var(--paper); color: var(--ink); }
+  .btn--ghost { background: var(--paper); color: var(--ink); }
+  .btn--ghost:hover { background: var(--ink); color: var(--paper); }
+
+  .hero__strip {
+    display: flex;
+    gap: 1.6rem;
+    margin-top: 2.6rem;
+    padding-top: 1.6rem;
+    border-top: 2px solid var(--ink);
+  }
+
+  .hero__strip span { display: block; }
+  .hero__strip .label { color: var(--soft); margin-bottom: 0.3rem; }
+  .hero__strip strong { font-size: 1.05rem; font-weight: 700; }
+
+  /* Offset box — the classic brutalist "shadow" trick */
+  .offset-box {
+    position: relative;
+  }
+
+  .offset-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform: translate(14px, 14px);
+    z-index: 0;
+  }
+
+  .offset-box__inner {
+    position: relative;
+    z-index: 1;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    padding: 2rem;
+  }
+
+  .hero__panel-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--soft);
+    margin-bottom: 1rem;
+  }
+
+  .hero__panel-title {
+    font-weight: 900;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0 0 1.2rem;
+  }
+
+  .hero__panel-viz {
+    height: 160px;
+    border: 2px solid var(--ink);
+    margin-bottom: 1.4rem;
+    background-image:
+      linear-gradient(var(--ink) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ink) 1px, transparent 1px);
+    background-size: 18px 18px;
+    background-color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero__panel-viz::after {
+    content: '';
+    position: absolute;
+    left: 8%;
+    top: 50%;
+    width: 84%;
+    height: 2px;
+    background: var(--ink);
+    transform: rotate(-6deg);
+  }
+
+  .hero__panel-viz::before {
+    content: '';
+    position: absolute;
+    left: 20%;
+    top: 30%;
+    width: 60%;
+    height: 2px;
+    background: var(--ink);
+    transform: rotate(18deg);
+  }
+
+  /* SECTION shared */
+  section { border-top: 2px solid var(--ink); }
+  .section-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 4.5rem 2rem;
+  }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-weight: 900;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .section-lede {
+    max-width: 32ch;
+    color: var(--soft);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ABOUT — numbered rows like "THE PROTOCOL" */
+  .protocol { display: flex; flex-direction: column; }
+
+  .protocol__row {
+    display: grid;
+    grid-template-columns: 4rem 1fr 1.4fr;
+    gap: 2rem;
+    align-items: start;
+    padding: 1.8rem 0;
+    border-top: 2px solid var(--ink);
+  }
+
+  .protocol__row:first-child { border-top: none; }
+
+  .protocol__num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--soft);
+  }
+
+  .protocol__title {
+    font-weight: 900;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .protocol__text {
+    color: var(--soft);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* CATEGORIES — pricing-style boxes */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    border: 2px solid var(--ink);
+  }
+
+  .cat-card {
+    padding: 2.2rem;
+    border-left: 2px solid var(--ink);
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .cat-card:first-child { border-left: none; }
+
+  .cat-card:hover { background: var(--ink); color: var(--paper); }
+  .cat-card:hover .cat-card__soon { color: var(--paper); opacity: 0.6; }
+
+  .cat-card__num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  .cat-card__title {
+    font-weight: 900;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .cat-card__text {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0.75;
+  }
+
+  .cat-card__soon {
+    margin-top: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  @media (max-width: 780px) {
+    .hero { grid-template-columns: 1fr; }
+    .protocol__row { grid-template-columns: 1fr; gap: 0.5rem; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .cat-card { border-left: none; border-top: 2px solid var(--ink); }
+    .cat-card:first-child { border-top: none; }
+    .nav__links { display: none; }
+  }
+
+  /* FOOTER */
+  footer.site-footer {
+    border-top: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2.4rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-inner .label { color: rgba(255,255,255,0.6); }
+
+  .footer-inner a {
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    padding-bottom: 2px;
+  }
+</style>
+</head>
+<body>
+
+  <header class="nav">
+    <a href="#" class="nav__brand"><span class="nav__brand-mark"></span>GEANTINO LABS</a>
+    <nav class="nav__links">
+      <a href="#" class="nav__link">Sobre</a>
+      <a href="#" class="nav__link">Simulações</a>
+      <a href="#" class="nav__link">Contato</a>
+    </nav>
+    <a href="#" class="nav__cta">Explorar →</a>
+  </header>
+
+  <div class="ticker">
+    <div class="ticker__track">
+      <span>GEANT4 — MOTOR CIENTÍFICO DO CERN</span>
+      <span>SIMULAÇÃO 3D NO NAVEGADOR</span>
+      <span>SEM INSTALAÇÃO</span>
+      <span>FÍSICA DE PARTÍCULAS</span>
+      <span>PROJETO ACADÊMICO IFPR</span>
+      <span>GEANT4 — MOTOR CIENTÍFICO DO CERN</span>
+      <span>SIMULAÇÃO 3D NO NAVEGADOR</span>
+      <span>SEM INSTALAÇÃO</span>
+      <span>FÍSICA DE PARTÍCULAS</span>
+      <span>PROJETO ACADÊMICO IFPR</span>
+    </div>
+  </div>
+
+  <section class="hero" style="border-top:none;">
+    <div>
+      <span class="hero__eyebrow">Laboratório virtual · Geant4</span>
+      <h1 class="hero__title">Simulação de partículas.<br>Direto no navegador.</h1>
+      <p class="hero__lede">
+        Uma plataforma web que roda simulações reais no Geant4 — o mesmo motor
+        científico usado no CERN — sem instalar nada.
+      </p>
+      <div class="hero__cta-row">
+        <a href="#" class="btn btn--solid">Explorar simulações →</a>
+        <a href="#" class="btn btn--ghost">Como funciona</a>
+      </div>
+      <div class="hero__strip">
+        <span>
+          <span class="label">Motor</span>
+          <strong>Geant4 11.3</strong>
+        </span>
+        <span>
+          <span class="label">Simulação ativa</span>
+          <strong>Espalh. de Rutherford</strong>
+        </span>
+        <span>
+          <span class="label">Instalação</span>
+          <strong>Zero</strong>
+        </span>
+      </div>
+    </div>
+
+    <div class="offset-box">
+      <div class="offset-box__inner">
+        <div class="hero__panel-label">Simulação em destaque</div>
+        <h2 class="hero__panel-title">Espalhamento de Rutherford</h2>
+        <div class="hero__panel-viz" aria-hidden="true"></div>
+        <a href="#" class="btn btn--solid" style="width:100%; justify-content:center;">▸ Rodar simulação</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-inner">
+      <div class="section-head">
+        <h2 class="section-title">O protocolo.</h2>
+        <p class="section-lede">
+          Uma plataforma para simulação e visualização de interações entre
+          partículas subatômicas, baseada no toolkit Geant4 do CERN.
+        </p>
+      </div>
+
+      <div class="protocol">
+        <div class="protocol__row">
+          <span class="protocol__num">01</span>
+          <h3 class="protocol__title">Configurar</h3>
+          <p class="protocol__text">Defina partículas, materiais e geometrias direto no navegador, sem ambiente local instalado.</p>
+        </div>
+        <div class="protocol__row">
+          <span class="protocol__num">02</span>
+          <h3 class="protocol__title">Simular</h3>
+          <p class="protocol__text">O Geant4 roda no servidor e devolve geometria e trajetórias reais da interação.</p>
+        </div>
+        <div class="protocol__row">
+          <span class="protocol__num">03</span>
+          <h3 class="protocol__title">Visualizar</h3>
+          <p class="protocol__text">Resultado renderizado em 3D interativo — ensino, pesquisa e prototipagem rápida.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-inner">
+      <div class="section-head">
+        <h2 class="section-title">Explore por área.</h2>
+      </div>
+
+      <div class="cat-grid">
+        <a href="#" class="cat-card">
+          <span class="cat-card__num">01 / FÍSICA MÉDICA</span>
+          <h3 class="cat-card__title">Física Médica</h3>
+          <p class="cat-card__text">Simulações de radioterapia e imagem médica.</p>
+          <span class="cat-card__soon">Em breve</span>
+        </a>
+        <a href="#" class="cat-card">
+          <span class="cat-card__num">02 / ASTROFÍSICA</span>
+          <h3 class="cat-card__title">Astrofísica</h3>
+          <p class="cat-card__text">Interações de partículas em ambientes cósmicos.</p>
+          <span class="cat-card__soon">Em breve</span>
+        </a>
+        <a href="#" class="cat-card">
+          <span class="cat-card__num">03 / FÍSICA NUCLEAR</span>
+          <h3 class="cat-card__title">Física Nuclear</h3>
+          <p class="cat-card__text">Decaimento, fissão e reações nucleares.</p>
+          <span class="cat-card__soon">Em breve</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="label">Geantino Labs — projeto acadêmico do IFPR</span>
+      <a href="https://github.com/LabVirtualParticles/LabVirtualParticles">GitHub ↗</a>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -76,6 +76,7 @@
 .sim-page__button--primary {
   background: var(--color-beam);
   border-color: var(--color-beam);
+  color: var(--color-void);
 }
 
 .sim-page__button--primary:hover:not(:disabled) {
@@ -259,6 +260,7 @@
 
 .sim-page__error {
   margin-top: 0.75rem;
-  color: #ff6b6b;
+  color: var(--color-on-void);
+  font-weight: 600;
   font-size: 0.9rem;
 }

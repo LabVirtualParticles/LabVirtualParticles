@@ -50,7 +50,7 @@
   gap: var(--space-1);
   padding: 0.9rem 1.6rem;
   background: var(--color-beam);
-  color: #fff;
+  color: var(--color-void);
   font-family: var(--font-body);
   font-weight: 600;
   font-size: var(--step--1);

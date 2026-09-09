@@ -8,15 +8,18 @@
 */
 
 :root {
-  /* Color */
+  /* Color — monocromático: apenas preto, branco e cinzas.
+     (Antes: --color-beam era azul #2f5dff e --color-trace era âmbar
+     #e3b23c — trocados por tons de cinza/branco pra manter a paleta
+     estritamente monocromática.) */
   --color-void: #000000;
   --color-void-soft: #0a0a0d;
-  --color-paper: #f3f1ec;
-  --color-ink: #101014;
+  --color-paper: #ffffff;
+  --color-ink: #0a0a0a;
 
-  --color-beam: #2f5dff;
-  --color-beam-hover: #4a72ff;
-  --color-trace: #e3b23c;
+  --color-beam: #ffffff;
+  --color-beam-hover: #c7c7c7;
+  --color-trace: #9a9a9a;
 
   --color-line: rgba(255, 255, 255, 0.14);
   --color-line-soft: rgba(255, 255, 255, 0.08);

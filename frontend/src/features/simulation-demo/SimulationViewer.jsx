@@ -23,7 +23,7 @@ function TargetVolume({ size, position = [0, 0, 0] }) {
   return (
     <mesh position={position}>
       <boxGeometry args={size} />
-      <meshBasicMaterial color="#e3b23c" wireframe />
+      <meshBasicMaterial color="#9a9a9a" wireframe />
     </mesh>
   );
 }
@@ -32,7 +32,7 @@ function TargetVolume({ size, position = [0, 0, 0] }) {
 // planos [x0,y0,z0, x1,y1,z1, ...] + índices de triângulo. Usado para
 // qualquer sólido que não seja uma caixa simples (ex.: o detector, um
 // G4Tubs tesselado em arco).
-function MeshVolume({ vertices, indices, position = [0, 0, 0], color = '#e3b23c' }) {
+function MeshVolume({ vertices, indices, position = [0, 0, 0], color = '#9a9a9a' }) {
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
