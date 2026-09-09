@@ -57,3 +57,21 @@
 
   --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* Tema claro — mesmos tokens, invertidos: fundo branco, texto escuro,
+   acento preto sobre branco (no lugar de branco sobre preto). Ativado
+   via atributo `data-theme="light"` no <html> (ver ThemeContext.jsx). */
+:root[data-theme='light'] {
+  --color-void: #ffffff;
+  --color-void-soft: #f2f2f0;
+
+  --color-beam: #000000;
+  --color-beam-hover: #333333;
+  --color-trace: #8a8a8a;
+
+  --color-line: rgba(0, 0, 0, 0.14);
+  --color-line-soft: rgba(0, 0, 0, 0.08);
+
+  --color-on-void: rgba(0, 0, 0, 0.92);
+  --color-on-void-soft: rgba(0, 0, 0, 0.62);
+}

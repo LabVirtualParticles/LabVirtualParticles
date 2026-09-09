@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Geantino Labs — tema claro (teste)</title>
+<style>
+  /*
+    Mesmo design system do site atual (mesmas classes/estrutura dos
+    componentes React: Navbar, Hero, About, Categories, Footer),
+    só que com os tokens de cor invertidos pra um tema claro.
+    Fontes usam a mesma pilha de fallback do tokens.css original
+    (Ykar/Fraunces não estão disponíveis fora do projeto real).
+  */
+  :root {
+    /* Tema claro: fundo branco, texto escuro, acento preto */
+    --color-void: #ffffff;
+    --color-void-soft: #f2f2f0;
+    --color-beam: #000000;
+    --color-beam-hover: #333333;
+    --color-trace: #8a8a8a;
+
+    --color-line: rgba(0, 0, 0, 0.14);
+    --color-line-soft: rgba(0, 0, 0, 0.08);
+
+    --color-on-void: rgba(0, 0, 0, 0.92);
+    --color-on-void-soft: rgba(0, 0, 0, 0.62);
+
+    --font-display: 'Helvetica Neue', Arial, sans-serif;
+    --font-subtitle: Georgia, 'Times New Roman', serif;
+    --font-body: Georgia, 'Times New Roman', serif;
+
+    --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+    --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+    --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+    --step-2: clamp(1.75rem, 1.5rem + 1.2vw, 2.5rem);
+    --step-3: clamp(2.5rem, 2rem + 2.5vw, 4rem);
+    --step-4: clamp(3.25rem, 2.4rem + 4.2vw, 6rem);
+
+    --space-1: 8px;
+    --space-2: 12px;
+    --space-3: 18px;
+    --space-4: 28px;
+    --space-5: 44px;
+    --space-6: 66px;
+
+    --content-max: 76rem;
+    --nav-height: 4.5rem;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+
+    --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * , *::before, *::after { box-sizing: border-box; }
+
+  html { color-scheme: light; }
+
+  body {
+    margin: 0;
+    background: var(--color-void);
+    color: var(--color-on-void);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img, video { max-width: 100%; display: block; }
+  a { color: inherit; }
+
+  /* Navbar */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .navbar__inner {
+    width: 100%;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--space-3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .navbar__brand {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    color: var(--color-on-void);
+  }
+  .navbar__nav { display: flex; align-items: center; gap: var(--space-4); }
+  .navbar__link {
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    color: var(--color-on-void-soft);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-standard);
+  }
+  .navbar__link:hover { color: var(--color-on-void); }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: calc(100vh - var(--nav-height));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    background: var(--color-void);
+    overflow: hidden;
+  }
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    padding: var(--space-5) var(--space-4);
+    max-width: 34rem;
+    justify-self: start;
+  }
+  .hero__title {
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    margin: 0 0 var(--space-3);
+    color: var(--color-on-void);
+  }
+  .hero__lede {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    line-height: 1.6;
+    color: var(--color-on-void-soft);
+    max-width: 42ch;
+    margin: 0 0 var(--space-4);
+  }
+  .hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 0.9rem 1.6rem;
+    background: var(--color-beam);
+    color: var(--color-void);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--step--1);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: transform 0.25s var(--ease-standard), background 0.25s var(--ease-standard);
+  }
+  .hero__cta:hover { background: var(--color-beam-hover); transform: translateY(-1px); }
+
+  .hero__stage {
+    position: relative;
+    height: 100%;
+    min-height: 26rem;
+    background: var(--color-void-soft);
+    border-left: 1px solid var(--color-line-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero__stage-placeholder {
+    font-family: var(--font-display);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-on-void-soft);
+    border: 1px dashed var(--color-line);
+    padding: 2.5rem 3rem;
+  }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; grid-template-rows: auto auto; }
+    .hero__stage { min-height: 60vw; border-left: none; border-top: 1px solid var(--color-line-soft); }
+    .hero__content { max-width: 100%; padding: var(--space-4) var(--space-3); }
+  }
+
+  /* About */
+  .about { background: var(--color-void); color: var(--color-on-void); padding: var(--space-6) var(--space-3); }
+  .about__inner { max-width: 56rem; margin: 0 auto; text-align: center; }
+  .about__title {
+    font-family: var(--font-subtitle);
+    font-weight: 700;
+    font-size: var(--step-3);
+    margin: 0 0 var(--space-3);
+  }
+  .about__lede { font-family: var(--font-body); font-size: var(--step-0); line-height: 1.6; color: var(--color-on-void-soft); }
+  .about__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+    text-align: left;
+  }
+  @media (max-width: 640px) { .about__grid { grid-template-columns: 1fr; } }
+  .about__card { padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-void-soft); }
+  .about__card-title { font-family: var(--font-body); font-weight: 600; font-size: var(--step-0); margin: 0 0 var(--space-1); color: var(--color-beam); }
+  .about__card-text { font-family: var(--font-body); font-size: var(--step--1); color: var(--color-on-void-soft); margin: 0; }
+
+  /* Categories */
+  .categories { background: var(--color-void); color: var(--color-on-void); padding: var(--space-6) var(--space-3); }
+  .categories__inner { max-width: var(--content-max); margin: 0 auto; }
+  .categories__title { font-family: var(--font-subtitle); font-weight: 700; font-size: var(--step-2); text-align: center; margin: 0 0 var(--space-5); }
+  .categories__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
+  @media (max-width: 720px) { .categories__grid { grid-template-columns: 1fr; } }
+  .categories__card {
+    display: block;
+    padding: var(--space-3);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-void-soft);
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease-standard);
+  }
+  .categories__card:hover { border-color: var(--color-beam); }
+  .categories__card-title { font-family: var(--font-body); font-weight: 600; font-size: var(--step-0); margin: 0 0 var(--space-1); color: var(--color-beam); }
+  .categories__card-text { font-family: var(--font-body); font-size: var(--step--1); color: var(--color-on-void-soft); margin: 0; }
+  .categories__card-soon { display: inline-block; margin-top: var(--space-2); font-family: var(--font-body); font-size: var(--step--1); color: var(--color-on-void-soft); opacity: 0.5; }
+
+  /* Footer */
+  .footer {
+    background: var(--color-void);
+    border-top: 1px solid var(--color-line);
+    color: var(--color-on-void-soft);
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    text-align: center;
+    padding: var(--space-4) var(--space-3);
+  }
+  .footer__link { color: var(--color-on-void-soft); text-decoration: none; transition: color 0.2s var(--ease-standard); }
+  .footer__link:hover { color: var(--color-beam); }
+</style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="navbar__inner">
+      <a href="#" class="navbar__brand">Geantino Labs</a>
+      <nav class="navbar__nav" aria-label="Principal">
+        <a href="#" class="navbar__link">Sobre</a>
+        <a href="#" class="navbar__link">Simulações</a>
+        <a href="#" class="navbar__link">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero__content">
+      <h1 class="hero__title">Geantino Labs</h1>
+      <p class="hero__lede">
+        Uma plataforma web que roda simulações reais no Geant4 — o mesmo motor
+        científico usado no CERN — direto do navegador, sem instalação.
+      </p>
+      <a href="#" class="hero__cta">Explorar simulações</a>
+    </div>
+    <div class="hero__stage">
+      <span class="hero__stage-placeholder">[ vídeo da simulação ]</span>
+    </div>
+  </section>
+
+  <section class="about">
+    <div class="about__inner">
+      <h2 class="about__title">Simulação de física de partículas direto no navegador</h2>
+      <p class="about__lede">
+        Uma plataforma web para simulação e visualização de interações entre
+        partículas subatômicas, desenvolvida com base no toolkit Geant4 do
+        CERN. Com ela, é possível configurar partículas, definir materiais e
+        geometrias, e analisar os resultados — sem precisar instalar nada.
+      </p>
+      <div class="about__grid">
+        <div class="about__card">
+          <h3 class="about__card-title">Ensino e pesquisa</h3>
+          <p class="about__card-text">Exploração de fenômenos físicos em contexto acadêmico.</p>
+        </div>
+        <div class="about__card">
+          <h3 class="about__card-title">Prototipagem rápida</h3>
+          <p class="about__card-text">Configuração e teste de simulações sem ambiente local instalado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories">
+    <div class="categories__inner">
+      <h2 class="categories__title">Explore por área</h2>
+      <div class="categories__grid">
+        <a href="#" class="categories__card">
+          <h3 class="categories__card-title">Física Médica</h3>
+          <p class="categories__card-text">Simulações de radioterapia e imagem médica</p>
+          <span class="categories__card-soon">Em breve</span>
+        </a>
+        <a href="#" class="categories__card">
+          <h3 class="categories__card-title">Astrofísica</h3>
+          <p class="categories__card-text">Interações de partículas em ambientes cósmicos</p>
+          <span class="categories__card-soon">Em breve</span>
+        </a>
+        <a href="#" class="categories__card">
+          <h3 class="categories__card-title">Física Nuclear</h3>
+          <p class="categories__card-text">Decaimento, fissão e reações nucleares</p>
+          <span class="categories__card-soon">Em breve</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Geantino Labs — projeto acadêmico do IFPR</p>
+    <a href="#" class="footer__link">GitHub</a>
+  </footer>
+
+</body>
+</html>
