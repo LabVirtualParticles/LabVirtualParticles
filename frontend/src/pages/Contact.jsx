@@ -7,10 +7,10 @@ import './Contact.css';
 // never requires touching the markup. `photo` is optional; while it's
 // empty the card falls back to the placeholder block shown in the mock.
 const TEAM = [
-  { id: 1, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '/team/team-1.jpg' },
-  { id: 2, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '/team/team-2.jpg' },
-  { id: 3, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '/team/team-3.jpg' },
-  { id: 4, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '/team/team-4.png' },
+  { id: 1, name: 'Brenda Emanueli Weber', email: 'brendaemanueli190@gmail.com', photo: '/team/team-1.jpg' },
+  { id: 2, name: 'Vitor Prestes Luzio', email: 'vitor.luzio@ifpr.edu.br', photo: '/team/team-2.jpg' },
+  { id: 3, name: 'Helen de Menezes Eberhardt', email: '20241ac0080053@estudantes.ifpr.edu.br', photo: '/team/team-3.jpg' },
+  { id: 4, name: 'Lorenzo Zottis Vanzella', email: 'chesslorenzo9@gmail.com', photo: '/team/team-4.png' },
   { id: 5, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '' },
   { id: 6, name: 'Nome do integrante', email: 'email@geantinolabs.org', photo: '' },
 ];
