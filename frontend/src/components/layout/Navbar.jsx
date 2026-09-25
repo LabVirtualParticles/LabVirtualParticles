@@ -1,8 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
+import { useAuth } from '../../context/AuthContext';
 import './Navbar.css';
 
 export default function Navbar() {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    await signOut();
+    navigate('/');
+  }
+
   return (
     <header className="navbar">
       <div className="navbar__inner">
@@ -20,9 +29,15 @@ export default function Navbar() {
           </Link>
 
           <span className="navbar__link-group">
-            <Link to="/contato" className="navbar__link">
-              Contato
-            </Link>
+            {user ? (
+              <button type="button" className="navbar__link" onClick={handleLogout}>
+                Sair
+              </button>
+            ) : (
+              <Link to="/login" className="navbar__link">
+                Login
+              </Link>
+            )}
             <ThemeToggle />
           </span>
         </nav>
