@@ -28,7 +28,9 @@ Depois:
 
 from __future__ import annotations
 
+import math
 import logging
+import random
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -82,9 +84,12 @@ SIMULATIONS: Dict[str, Dict[str, Any]] = {
         },
         # Faixas de validação - ver nota de segurança mais abaixo: qualquer
         # parâmetro fora daqui é rejeitado ANTES de virar texto na macro.
+        # `None` no lugar do máximo = sem limite superior (pedido do
+        # Lorenzo, nov/2026). Os mínimos ficam porque abaixo deles o Geant4
+        # não roda (energia precisa ser > 0 e pelo menos 1 evento).
         "param_ranges": {
-            "energy_MeV": (0.001, 20.0),
-            "n_events": (1, 20000),
+            "energy_MeV": (0.001, None),
+            "n_events": (1, None),
         },
         "allowed_particles": {"alpha", "e-", "e+", "gamma", "proton"},
     },
@@ -116,6 +121,13 @@ class RunSimulationRequest(BaseModel):
     dir_y: Optional[float] = None
     dir_z: Optional[float] = None
     n_events: Optional[int] = Field(default=None, ge=1)
+    # Seed do gerador de números aleatórios do Geant4 (/random/setSeeds no
+    # macro). Opcional: se o usuário não mandar, o backend sorteia uma e
+    # devolve em `seed_used` na resposta — é isso que permite o relatório
+    # do dashboard registrar qual seed gerou cada simulação, e também
+    # permite reproduzir a mesma simulação de novo passando a mesma seed.
+    seed1: Optional[int] = Field(default=None, ge=0, le=900000000)
+    seed2: Optional[int] = Field(default=None, ge=0, le=900000000)
 
 
 class SimulationSummary(BaseModel):
@@ -128,6 +140,7 @@ class RunSimulationResponse(BaseModel):
     run_id: str
     duration_seconds: float
     params_used: Dict[str, Any]
+    seed_used: Dict[str, int]
     geometry: Dict[str, Any]
     trajectories: List[Dict[str, Any]]
     stdout_tail: str
@@ -160,10 +173,18 @@ def _validate_and_merge_params(sim_id: str, sim_config: Dict[str, Any], req: Run
     ranges = sim_config.get("param_ranges", {})
     for key, (low, high) in ranges.items():
         value = params.get(key)
-        if value is None or not (low <= value <= high):
+        # isfinite: sem limite superior, "Infinity"/NaN (que o JSON do
+        # Python aceita) passariam e virariam "inf"/"nan" na macro.
+        if (
+            not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or (low is not None and value < low)
+            or (high is not None and value > high)
+        ):
+            faixa = f"[{low}, {high if high is not None else '∞'}]"
             raise HTTPException(
                 status_code=422,
-                detail=f"Parâmetro '{key}'={value!r} fora da faixa permitida [{low}, {high}]",
+                detail=f"Parâmetro '{key}'={value!r} fora da faixa permitida {faixa}",
             )
 
     for key in ("pos_x_cm", "pos_y_cm", "pos_z_cm", "dir_x", "dir_y", "dir_z"):
@@ -196,6 +217,21 @@ def run_simulation(sim_id: str, req: RunSimulationRequest) -> RunSimulationRespo
         raise HTTPException(status_code=404, detail=f"Simulação '{sim_id}' não encontrada")
 
     params = _validate_and_merge_params(sim_id, sim_config, req)
+
+    # Sorteia a seed quando o usuário não mandou uma própria. Faixa
+    # 0..900000000 (abaixo do limite de 32 bits que o Geant4/CLHEP espera
+    # para /random/setSeeds) — guardamos os dois valores sorteados/usados
+    # em `seed_used` na resposta, não só o que foi passado, porque só aí
+    # dá pra saber a seed real mesmo quando o usuário não informou uma.
+    seed1 = params.pop("seed1", None)
+    seed2 = params.pop("seed2", None)
+    if seed1 is None:
+        seed1 = random.randint(0, 900_000_000)
+    if seed2 is None:
+        seed2 = random.randint(0, 900_000_000)
+    params["seed1"] = seed1
+    params["seed2"] = seed2
+    seed_used = {"seed1": seed1, "seed2": seed2}
 
     sim_request = SimulationRequest(
         executable=sim_config["executable"],
@@ -242,6 +278,7 @@ def run_simulation(sim_id: str, req: RunSimulationRequest) -> RunSimulationRespo
         run_id=result.run_id,
         duration_seconds=result.duration_seconds,
         params_used=params,
+        seed_used=seed_used,
         geometry=geometry,
         trajectories=trajectories_data.get("trajectories", []),
         stdout_tail=result.stdout[-2000:],
