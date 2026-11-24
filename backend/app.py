@@ -78,6 +78,16 @@ ISOTOPES: Dict[str, tuple] = {
 # O código do B3a fica neste mesmo repositório (simulations/B3a-geantino),
 # então o caminho padrão vale em qualquer máquina que tenha o repo — só
 # precisa compilar lá dentro (build/). GEANTINO_B3A_DIR ainda sobrescreve.
+# Mesmo esquema para o B5 (simulations/B5-geantino).
+B5_DIR = os.environ.get(
+    "GEANTINO_B5_DIR",
+    str(Path(__file__).resolve().parent.parent / "simulations" / "B5-geantino"),
+)
+
+# Partículas que o B5 sabe sortear; "random" = sorteia a cada evento, como
+# no exemplo original.
+B5_PARTICLES = {"random", "e+", "mu+", "pi+", "kaon+", "proton"}
+
 B3A_DIR = os.environ.get(
     "GEANTINO_B3A_DIR",
     str(Path(__file__).resolve().parent.parent / "simulations" / "B3a-geantino"),
@@ -145,6 +155,40 @@ SIMULATIONS: Dict[str, Dict[str, Any]] = {
         },
         "choices": {"isotope": set(ISOTOPES)},
     },
+    # Exemplo oficial B5 do Geant4 (espectrômetro de dois braços: hodoscópios,
+    # câmaras de deriva, ímã e calorímetros), adaptado para batch pelo
+    # Geantino Labs — código em simulations/B5-geantino/.
+    "b5": {
+        "label": "Espectrômetro — exemplo B5 do Geant4",
+        "executable": f"{B5_DIR}/build/geantinoB5",
+        "macro_template": f"{B5_DIR}/macros/run_batch.mac.tmpl",
+        "geometry_filename": "geometria.gdml",
+        "trajectories_filename": "trajetorias.json",
+        "results_filename": "resultados.json",
+        # Caixas de ar dos braços, volumes que só agrupam células e as
+        # centenas de camadas do calorímetro hadrônico: a cena fica com os
+        # detectores (hodoscópios, câmaras, células dos calorímetros) e o ímã.
+        "hidden_volumes": [
+            "firstArmLogical", "secondArmLogical",
+            "wirePlane1Logical", "wirePlane2Logical",
+            "EMcalorimeterLogical", "HadCalorimeterLogical",
+            "HadCalColumnLogical", "HadCalLayerLogical", "HadCalScintiLogical",
+        ],
+        "default_params": {
+            "particle": "random",
+            "momentum_GeV": 1,
+            "field_T": 1,
+            "arm_angle_deg": 30,
+            "n_events": 20,
+        },
+        "param_ranges": {
+            "momentum_GeV": (0.05, None),
+            "field_T": (-5, 5),
+            "arm_angle_deg": (0, 60),
+            "n_events": (1, None),
+        },
+        "choices": {"particle": B5_PARTICLES},
+    },
 }
 
 # Sem isso, o Geant4Runner sobe o processo do "programa" sem G4LEDATA/
@@ -183,6 +227,10 @@ class RunSimulationRequest(BaseModel):
     # B3a (PET)
     isotope: Optional[str] = None
     source_size_cm: Optional[float] = None
+    # B5 (espectrômetro) — "particle" é o mesmo campo do Rutherford
+    momentum_GeV: Optional[float] = None
+    field_T: Optional[float] = None
+    arm_angle_deg: Optional[float] = None
 
 
 class SimulationSummary(BaseModel):
@@ -278,6 +326,11 @@ def _macro_params(sim_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
     extra: Dict[str, Any] = {}
     if "isotope" in params:
         extra["ion_Z"], extra["ion_A"] = ISOTOPES[params["isotope"]]
+    if sim_id == "b5":
+        # "random" liga o sorteio do próprio exemplo; senão fixa /gun/particle.
+        random_particle = params["particle"] == "random"
+        extra["randomize"] = "true" if random_particle else "false"
+        extra["gun_particle"] = "e+" if random_particle else params["particle"]
     return extra
 
 

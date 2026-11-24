@@ -1,0 +1,25 @@
+# Macro de execucao em lote (batch) do B5, preenchida pelo backend do site
+# via string.Template (geant4_runner.py). NAO renomear os placeholders sem
+# atualizar o app.py. Para testar na mao, use macros/run_batch_exemplo.mac.
+#
+# Placeholders: $$randomize, $$gun_particle, $$momentum_GeV, $$field_T,
+# $$arm_angle_deg, $$seed1, $$seed2, $$n_events
+
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+/run/initialize
+
+# Particula: sorteada entre e+, mu+, pi+, kaon+ e proton (randomize true,
+# como no original) ou fixa (randomize false + /gun/particle)
+/B5/generator/randomizePrimary $randomize
+/gun/particle $gun_particle
+/B5/generator/momentum $momentum_GeV GeV
+
+/B5/field/value $field_T tesla
+/B5/detector/armAngle $arm_angle_deg deg
+
+/random/setSeeds $seed1 $seed2
+/run/beamOn $n_events

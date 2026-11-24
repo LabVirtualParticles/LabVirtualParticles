@@ -279,6 +279,7 @@ def _walk_volume(
     parent_rot: Mat3,
     output: List[Dict[str, Any]],
     visited: set,
+    solid_override: Optional[ET.Element] = None,
 ) -> None:
     if vol_name in visited:
         logger.warning("Referência circular detectada em '%s' - interrompendo esse ramo", vol_name)
@@ -291,7 +292,18 @@ def _walk_volume(
         return
 
     solid_ref_elem = vol.find("solidref")
-    if solid_ref_elem is not None:
+    if solid_override is not None:
+        # Cópia de um <paramvol>: cada cópia traz o próprio tamanho
+        # (<box_dimensions>), que vale no lugar do sólido do volume.
+        mesh = tessellate(solid_override)
+        if mesh is not None:
+            output.append({
+                "name": vol_name,
+                "vertices": _rotate_flat_vertices(mesh["vertices"], parent_rot),
+                "indices": mesh["indices"],
+                "position": list(parent_pos),
+            })
+    elif solid_ref_elem is not None:
         solid = solids.get(solid_ref_elem.get("ref"))
         if solid is None:
             logger.warning(
@@ -329,6 +341,60 @@ def _walk_volume(
             child_name, volumes_by_name, solids, positions, rotations,
             world_pos, world_rot, output, visited,
         )
+
+    # Réplicas (G4PVReplica) — ex.: calorímetro hadrônico do exemplo B5.
+    # Só eixos cartesianos: a cópia i fica em −largura·(n−1)/2 + i·largura
+    # ao longo do eixo (é o que o G4ReplicaNavigation faz para kXAxis/kYAxis/
+    # kZAxis; o offset só vale para réplicas em rho/phi, não suportadas).
+    for rv in vol.findall("replicavol"):
+        child_ref_elem = rv.find("volumeref")
+        along = rv.find("replicate_along_axis")
+        if child_ref_elem is None or along is None:
+            continue
+        direction = along.find("direction")
+        width_elem = along.find("width")
+        if direction is None or width_elem is None:
+            continue
+        axis = next((i for i, name in enumerate(("x", "y", "z")) if float(direction.get(name, 0) or 0) != 0), None)
+        if axis is None:
+            logger.warning("Réplica de '%s' fora dos eixos x/y/z - omitida", child_ref_elem.get("ref"))
+            continue
+        count = int(float(rv.get("number", 1)))
+        width = float(width_elem.get("value", 0)) * _length_factor(width_elem)
+        for copy in range(count):
+            local = [0.0, 0.0, 0.0]
+            local[axis] = -width * (count - 1) / 2 + copy * width
+            world_pos = _vec_add(parent_pos, _mat_vec(parent_rot, tuple(local)))
+            _walk_volume(
+                child_ref_elem.get("ref"), volumes_by_name, solids, positions, rotations,
+                world_pos, parent_rot, output, visited,
+            )
+
+    # Volumes parametrizados (G4PVParameterised) — ex.: células do
+    # calorímetro eletromagnético do B5. O GDML lista cada cópia com
+    # posição (e rotação, se houver) e o tamanho; só caixas são suportadas.
+    for pv in vol.findall("paramvol"):
+        child_ref_elem = pv.find("volumeref")
+        block = pv.find("parameterised_position_size")
+        if child_ref_elem is None or block is None:
+            continue
+        for params in block.findall("parameters"):
+            box = params.find("box_dimensions")
+            if box is None:
+                logger.warning("Cópia parametrizada de '%s' sem <box_dimensions> - omitida", child_ref_elem.get("ref"))
+                continue
+            override = ET.Element("box", {
+                "x": box.get("x", "0"), "y": box.get("y", "0"), "z": box.get("z", "0"),
+                "lunit": box.get("lunit", "mm"),
+            })
+            local_pos = _resolve_physvol_position(params, positions)
+            local_rot = _resolve_physvol_rotation(params, rotations)
+            world_pos = _vec_add(parent_pos, _mat_vec(parent_rot, local_pos))
+            world_rot = _mat_mul(parent_rot, local_rot)
+            _walk_volume(
+                child_ref_elem.get("ref"), volumes_by_name, solids, positions, rotations,
+                world_pos, world_rot, output, visited, solid_override=override,
+            )
 
 
 # --------------------------------------------------------------------------- #

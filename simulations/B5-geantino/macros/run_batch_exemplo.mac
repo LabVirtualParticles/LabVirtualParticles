@@ -1,0 +1,22 @@
+# Mesma macro do run_batch.mac.tmpl, preenchida com os valores padrao do
+# exemplo original (particula sorteada, 1 GeV, 1 T, braco a 30 graus) e
+# 20 eventos. Teste: ./geantinoB5 run_batch_exemplo.mac
+
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+/run/initialize
+
+# Particula: sorteada entre e+, mu+, pi+, kaon+ e proton (randomize true,
+# como no original) ou fixa (randomize false + /gun/particle)
+/B5/generator/randomizePrimary true
+/gun/particle e+
+/B5/generator/momentum 1 GeV
+
+/B5/field/value 1 tesla
+/B5/detector/armAngle 30 deg
+
+/random/setSeeds 12345 67890
+/run/beamOn 20
