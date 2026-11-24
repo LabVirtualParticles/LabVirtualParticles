@@ -28,9 +28,12 @@ Depois:
 
 from __future__ import annotations
 
+import json
 import math
 import logging
+import os
 import random
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -64,6 +67,19 @@ app.add_middleware(
 # backend-execucao-batch-geant4.md).
 # --------------------------------------------------------------------------- #
 
+# Isótopos emissores de pósitron usados em PET (para o B3a): nome -> (Z, A).
+ISOTOPES: Dict[str, tuple] = {
+    "F18": (9, 18),
+    "C11": (6, 11),
+    "N13": (7, 13),
+    "O15": (8, 15),
+}
+
+B3A_DIR = os.environ.get(
+    "GEANTINO_B3A_DIR",
+    "/home/lorenzo/Scientific/geant4/geant4-11.3.2/examples/basic/B3/B3a-geantino",
+)
+
 SIMULATIONS: Dict[str, Dict[str, Any]] = {
     "rutherford": {
         "label": "Espalhamento de Rutherford",
@@ -92,6 +108,40 @@ SIMULATIONS: Dict[str, Dict[str, Any]] = {
             "n_events": (1, None),
         },
         "allowed_particles": {"alpha", "e-", "e+", "gamma", "proton"},
+    },
+    # Exemplo oficial B3a do Geant4 (scanner PET), adaptado para batch pelo
+    # Geantino Labs — código em B3a-geantino/ (ver o README de lá). A pasta
+    # pode ser trocada sem editar este arquivo, pela variável de ambiente
+    # GEANTINO_B3A_DIR (ex.: no servidor, /root/geantinolabs/B3a-geantino).
+    "b3a": {
+        "label": "PET — exemplo B3a do Geant4",
+        "executable": f"{B3A_DIR}/build/geantinoB3a",
+        "macro_template": f"{B3A_DIR}/macros/run_batch.mac.tmpl",
+        "geometry_filename": "geometria.gdml",
+        "trajectories_filename": "trajetorias.json",
+        "results_filename": "resultados.json",
+        # Volumes de ar que só agrupam os cristais (no original já eram
+        # invisíveis no visualizador do Geant4). Sem eles a cena fica mais
+        # leve e os cristais aparecem.
+        "hidden_volumes": ["Ring", "Detector"],
+        "default_params": {
+            "isotope": "F18",
+            "pos_x_cm": 4,
+            "pos_y_cm": 4,
+            "pos_z_cm": 4,
+            "source_size_cm": 1,
+            "n_events": 200,
+        },
+        # Fonte tem que ficar dentro do mundo (±40 cm em x/y, ±32 cm em z);
+        # o paciente é um cilindro de raio 8 cm e meia-altura 5 cm.
+        "param_ranges": {
+            "pos_x_cm": (-30, 30),
+            "pos_y_cm": (-30, 30),
+            "pos_z_cm": (-30, 30),
+            "source_size_cm": (0, 10),
+            "n_events": (1, None),
+        },
+        "choices": {"isotope": set(ISOTOPES)},
     },
 }
 
@@ -128,6 +178,9 @@ class RunSimulationRequest(BaseModel):
     # permite reproduzir a mesma simulação de novo passando a mesma seed.
     seed1: Optional[int] = Field(default=None, ge=0, le=900000000)
     seed2: Optional[int] = Field(default=None, ge=0, le=900000000)
+    # B3a (PET)
+    isotope: Optional[str] = None
+    source_size_cm: Optional[float] = None
 
 
 class SimulationSummary(BaseModel):
@@ -143,6 +196,10 @@ class RunSimulationResponse(BaseModel):
     seed_used: Dict[str, int]
     geometry: Dict[str, Any]
     trajectories: List[Dict[str, Any]]
+    # Resultados numéricos próprios de cada simulação (ex.: no B3a, eventos
+    # em coincidência, dose e linhas de resposta). None quando a simulação
+    # não grava um arquivo de resultados (Rutherford).
+    results: Optional[Dict[str, Any]] = None
     stdout_tail: str
 
 
@@ -159,16 +216,30 @@ class RunSimulationResponse(BaseModel):
 # --------------------------------------------------------------------------- #
 
 def _validate_and_merge_params(sim_id: str, sim_config: Dict[str, Any], req: RunSimulationRequest) -> Dict[str, Any]:
-    params = dict(sim_config["default_params"])
+    defaults = sim_config["default_params"]
+    params = dict(defaults)
     provided = req.model_dump(exclude_none=True)
-    params.update(provided)
+    # Só aceita parâmetros que a simulação conhece (+ seeds) — um campo de
+    # outra simulação (ex. "particle" mandado pro B3a) é ignorado em vez de
+    # virar texto na macro.
+    params.update({k: v for k, v in provided.items() if k in defaults or k in ("seed1", "seed2")})
 
-    allowed_particles = sim_config.get("allowed_particles")
-    if allowed_particles and params["particle"] not in allowed_particles:
-        raise HTTPException(
-            status_code=422,
-            detail=f"Partícula '{params['particle']}' não permitida para '{sim_id}'. Opções: {sorted(allowed_particles)}",
-        )
+    if "particle" in defaults:
+        allowed_particles = sim_config.get("allowed_particles")
+        if allowed_particles and params["particle"] not in allowed_particles:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Partícula '{params['particle']}' não permitida para '{sim_id}'. Opções: {sorted(allowed_particles)}",
+            )
+        if not isinstance(params.get("particle"), str) or "\n" in params["particle"] or " " in params["particle"]:
+            raise HTTPException(status_code=422, detail="Parâmetro 'particle' inválido")
+
+    for key, allowed in sim_config.get("choices", {}).items():
+        if params.get(key) not in allowed:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Parâmetro '{key}'={params.get(key)!r} inválido para '{sim_id}'. Opções: {sorted(allowed)}",
+            )
 
     ranges = sim_config.get("param_ranges", {})
     for key, (low, high) in ranges.items():
@@ -176,7 +247,8 @@ def _validate_and_merge_params(sim_id: str, sim_config: Dict[str, Any], req: Run
         # isfinite: sem limite superior, "Infinity"/NaN (que o JSON do
         # Python aceita) passariam e virariam "inf"/"nan" na macro.
         if (
-            not isinstance(value, (int, float))
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
             or not math.isfinite(value)
             or (low is not None and value < low)
             or (high is not None and value > high)
@@ -187,15 +259,37 @@ def _validate_and_merge_params(sim_id: str, sim_config: Dict[str, Any], req: Run
                 detail=f"Parâmetro '{key}'={value!r} fora da faixa permitida {faixa}",
             )
 
-    for key in ("pos_x_cm", "pos_y_cm", "pos_z_cm", "dir_x", "dir_y", "dir_z"):
-        value = params.get(key)
-        if not isinstance(value, (int, float)):
+    # Todo parâmetro que não é texto escolhido de uma lista tem que ser
+    # número finito (vale para pos/dir do Rutherford e qualquer outro).
+    text_keys = {"particle"} | set(sim_config.get("choices", {}))
+    for key, value in params.items():
+        if key in text_keys or key in ("seed1", "seed2"):
+            continue
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
             raise HTTPException(status_code=422, detail=f"Parâmetro '{key}' deve ser numérico, recebi {value!r}")
 
-    if not isinstance(params.get("particle"), str) or "\n" in params["particle"] or " " in params["particle"]:
-        raise HTTPException(status_code=422, detail="Parâmetro 'particle' inválido")
-
     return params
+
+
+def _macro_params(sim_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    """Valores extras que só a macro precisa (não vão em params_used)."""
+    extra: Dict[str, Any] = {}
+    if "isotope" in params:
+        extra["ion_Z"], extra["ion_A"] = ISOTOPES[params["isotope"]]
+    return extra
+
+
+def _hide_volumes(geometry: Dict[str, Any], hidden: List[str]) -> Dict[str, Any]:
+    # O G4GDMLParser acrescenta o endereço ao nome (ex. "Ring0x55d1..."),
+    # por isso compara o nome lógico sem esse sufixo.
+    if not hidden:
+        return geometry
+    hidden_set = set(hidden)
+    volumes = [
+        v for v in geometry.get("volumes", [])
+        if re.sub(r"0x[0-9a-fA-F]+$", "", v.get("name", "")) not in hidden_set
+    ]
+    return {**geometry, "volumes": volumes}
 
 
 # --------------------------------------------------------------------------- #
@@ -233,11 +327,15 @@ def run_simulation(sim_id: str, req: RunSimulationRequest) -> RunSimulationRespo
     params["seed2"] = seed2
     seed_used = {"seed1": seed1, "seed2": seed2}
 
+    output_patterns = [sim_config["geometry_filename"], sim_config["trajectories_filename"]]
+    if sim_config.get("results_filename"):
+        output_patterns.append(sim_config["results_filename"])
+
     sim_request = SimulationRequest(
         executable=sim_config["executable"],
         macro_template=sim_config["macro_template"],
-        params=params,
-        output_patterns=[sim_config["geometry_filename"], sim_config["trajectories_filename"]],
+        params={**params, **_macro_params(sim_id, params)},
+        output_patterns=output_patterns,
         timeout_seconds=120.0,
     )
 
@@ -268,11 +366,22 @@ def run_simulation(sim_id: str, req: RunSimulationRequest) -> RunSimulationRespo
     except GdmlConversionError as exc:
         raise HTTPException(status_code=502, detail=f"Falha ao interpretar a geometria gerada: {exc}") from exc
 
-    import json
+    geometry = _hide_volumes(geometry, sim_config.get("hidden_volumes", []))
+
     try:
         trajectories_data = json.loads(trajectories_path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
         raise HTTPException(status_code=502, detail=f"Falha ao ler trajetórias geradas: {exc}") from exc
+
+    results = None
+    if sim_config.get("results_filename"):
+        results_path = work_dir / sim_config["results_filename"]
+        if not results_path.is_file():
+            raise HTTPException(status_code=502, detail=f"Simulação terminou mas não gerou '{results_path.name}'")
+        try:
+            results = json.loads(results_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            raise HTTPException(status_code=502, detail=f"Falha ao ler resultados gerados: {exc}") from exc
 
     return RunSimulationResponse(
         run_id=result.run_id,
@@ -281,6 +390,7 @@ def run_simulation(sim_id: str, req: RunSimulationRequest) -> RunSimulationRespo
         seed_used=seed_used,
         geometry=geometry,
         trajectories=trajectories_data.get("trajectories", []),
+        results=results,
         stdout_tail=result.stdout[-2000:],
     )
 
