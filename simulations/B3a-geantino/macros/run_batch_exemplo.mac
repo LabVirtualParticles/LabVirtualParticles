@@ -1,0 +1,19 @@
+# Mesma macro do run_batch.mac.tmpl, ja preenchida com os valores padrao
+# (F18 no centro (4, 4, 4) cm, cubo de 1 cm, 100 eventos), para testar
+# na mao:  ./geantinoB3a run_batch_exemplo.mac
+
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+/run/initialize
+
+/gun/particle ion
+/gun/ion 9 18 0
+
+/geantino/source/centre 4 4 4 cm
+/geantino/source/size 1 cm
+
+/random/setSeeds 12345 67890
+/run/beamOn 100

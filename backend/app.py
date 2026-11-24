@@ -75,9 +75,12 @@ ISOTOPES: Dict[str, tuple] = {
     "O15": (8, 15),
 }
 
+# O código do B3a fica neste mesmo repositório (simulations/B3a-geantino),
+# então o caminho padrão vale em qualquer máquina que tenha o repo — só
+# precisa compilar lá dentro (build/). GEANTINO_B3A_DIR ainda sobrescreve.
 B3A_DIR = os.environ.get(
     "GEANTINO_B3A_DIR",
-    "/home/lorenzo/Scientific/geant4/geant4-11.3.2/examples/basic/B3/B3a-geantino",
+    str(Path(__file__).resolve().parent.parent / "simulations" / "B3a-geantino"),
 )
 
 SIMULATIONS: Dict[str, Dict[str, Any]] = {
@@ -110,9 +113,8 @@ SIMULATIONS: Dict[str, Dict[str, Any]] = {
         "allowed_particles": {"alpha", "e-", "e+", "gamma", "proton"},
     },
     # Exemplo oficial B3a do Geant4 (scanner PET), adaptado para batch pelo
-    # Geantino Labs — código em B3a-geantino/ (ver o README de lá). A pasta
-    # pode ser trocada sem editar este arquivo, pela variável de ambiente
-    # GEANTINO_B3A_DIR (ex.: no servidor, /root/geantinolabs/B3a-geantino).
+    # Geantino Labs — código em simulations/B3a-geantino/ (ver o README de
+    # lá). Compilar com: cmake -S . -B build && cmake --build build.
     "b3a": {
         "label": "PET — exemplo B3a do Geant4",
         "executable": f"{B3A_DIR}/build/geantinoB3a",

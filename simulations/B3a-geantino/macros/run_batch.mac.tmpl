@@ -1,0 +1,24 @@
+# Macro de execucao em lote (batch) do B3a, preenchida pelo backend do
+# site via string.Template (geant4_runner.py). NAO renomear os
+# placeholders sem atualizar o app.py. NAO editar com valores reais --
+# para testar manualmente, use macros/run_batch_exemplo.mac.
+#
+# Placeholders: $$ion_Z, $$ion_A, $$pos_x_cm, $$pos_y_cm, $$pos_z_cm,
+# $$source_size_cm, $$seed1, $$seed2, $$n_events
+
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+/run/initialize
+
+# Isotopo da fonte, em repouso (carga 0, como o F18 do exemplo original)
+/gun/particle ion
+/gun/ion $ion_Z $ion_A 0
+
+/geantino/source/centre $pos_x_cm $pos_y_cm $pos_z_cm cm
+/geantino/source/size $source_size_cm cm
+
+/random/setSeeds $seed1 $seed2
+/run/beamOn $n_events
